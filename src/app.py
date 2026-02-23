@@ -64,7 +64,7 @@ def home():
       <br><br>
 
       <label><b>Amount (USD):</b></label><br>
-      <input name="amount" type="number" step="0.01" placeholder="12.50" required>
+      <input name="amount" type="number" step="0.01" placeholder="Key in here" required>
 
       <br><br>
 
