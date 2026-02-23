@@ -5,22 +5,68 @@ app = Flask(__name__)
 
 @app.get("/")
 def home():
-    # Minimal HTML form (no templates yet)
     return """
     <h2>Simple Expense Tracker (MVP)</h2>
 
     <form action="/record" method="POST">
-      <label>Category:</label><br>
-      <input name="category" placeholder="Food" required><br><br>
+      <label><b>Category:</b></label><br>
 
-      <label>Type:</label><br>
-      <select name="txn_type" required>
+      <style>
+        .cat { display:inline-block; margin:6px 8px 6px 0; }
+        .cat input { display:none; }
+        .cat span {
+          display:inline-block;
+          padding:8px 12px;
+          border:1px solid #333;
+          border-radius:6px;
+          cursor:pointer;
+          user-select:none;
+        }
+        .cat input:checked + span {
+          font-weight:bold;
+          text-decoration:underline;
+        }
+      </style>
+
+      <label class="cat">
+        <input type="radio" name="category" value="Food" required>
+        <span>Food</span>
+      </label>
+
+      <label class="cat">
+        <input type="radio" name="category" value="Transport">
+        <span>Transport</span>
+      </label>
+
+      <label class="cat">
+        <input type="radio" name="category" value="Housing">
+        <span>Housing</span>
+      </label>
+
+      <label class="cat">
+        <input type="radio" name="category" value="Entertainment">
+        <span>Entertainment</span>
+      </label>
+
+      <label class="cat">
+        <input type="radio" name="category" value="Other">
+        <span>Other</span>
+      </label>
+
+      <br><br>
+
+      <label><b>Type:</b></label><br>
+      <select name="txn_type">
         <option value="expense" selected>Expense</option>
         <option value="income">Income</option>
-      </select><br><br>
+      </select>
 
-      <label>Amount (USD):</label><br>
-      <input name="amount" type="number" step="0.01" placeholder="12.50" required><br><br>
+      <br><br>
+
+      <label><b>Amount (USD):</b></label><br>
+      <input name="amount" type="number" step="0.01" placeholder="12.50" required>
+
+      <br><br>
 
       <button type="submit">Submit</button>
     </form>
