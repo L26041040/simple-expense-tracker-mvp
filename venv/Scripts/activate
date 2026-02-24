@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\CU boulder\SW Arch Class 3 - Applications of Software Architecture for Big Data\Project2\simple_expense_web\venv"
+VIRTUAL_ENV="C:\CU boulder\SW Arch Class 3 - Applications of Software Architecture for Big Data\Final Project\simple_expense_web\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

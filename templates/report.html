@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3>Monthly Report (Analysis in USD)</h3>
+
+<form method="GET" action="/report">
+  <label>Year:</label>
+  <input type="number" name="year" value="{{ r.year }}" min="2000" max="2100">
+  <label>Month:</label>
+  <input type="number" name="month" value="{{ r.month }}" min="1" max="12">
+  <button type="submit">Run</button>
+</form>
+
+<p><b>Summary</b></p>
+<ul>
+  <li>Records: {{ r.count }}</li>
+  <li>Total: ${{ r.total }} (USD)</li>
+</ul>
+
+<p><b>Category Totals</b></p>
+<table border="1" cellpadding="6">
+  <tr><th>Category</th><th>Total (USD)</th><th>Percent</th></tr>
+  {% for cat, amt in r.totals_by_cat.items() %}
+  <tr>
+    <td>{{ cat }}</td>
+    <td>{{ amt }}</td>
+    <td>{{ r.percent_by_cat[cat] }}%</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p><b>Top Single Expense (by USD)</b></p>
+{% if r.top_item %}
+  <ul>
+    <li>ID: {{ r.top_item.id }}</li>
+    <li>Date: {{ r.top_item.expense_date }}</li>
+    <li>Category: {{ r.top_item.category }}</li>
+    <li>Original: {{ "%.2f"|format(r.top_item.amount_original) }} {{ r.top_item.currency }}</li>
+    <li>Stored: ${{ "%.2f"|format(r.top_item.amount_usd) }} USD</li>
+  </ul>
+{% else %}
+  <p>No data for this month.</p>
+{% endif %}
+
+{% endblock %}

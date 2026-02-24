@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3>FX Data Stored in Database</h3>
+
+<p>
+  Time stamp (UTC):
+  {% if fx_timestamp %}
+    {{ fx_timestamp }}
+  {% else %}
+    N/A
+  {% endif %}
+</p>
+
+<p><b>Current FX Table (used by the web app)</b></p>
+<table border="1" cellpadding="6">
+  <tr>
+    <th>Currency</th>
+    <th>to USD (1 USD = X currency)</th>
+    <th>Updated at (UTC)</th>
+  </tr>
+  {% for r in fx_rows %}
+  <tr>
+    <td>{{ r.currency }}</td>
+    <td>{{ r.rate_to_usd }}</td>
+    <td>{{ r.updated_at_utc }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<hr>
+
+<p><b>Latest API Snapshot Row</b> (proof that we fetched from API and stored to DB)</p>
+{% if latest %}
+  <ul>
+    <li>ID: {{ latest.id }}</li>
+    <li>Fetched at (UTC): {{ latest.fetched_at_utc }}</li>
+    <li>Base: {{ latest.base }}</li>
+    <li>Date: {{ latest.date_str }}</li>
+    <li>Symbols: {{ latest.symbols }}</li>
+    <li>Rates (stored as text): {{ latest.rates_json }}</li>
+  </ul>
+{% else %}
+  <p>No snapshot yet. Go to Home and click Fetch FX.</p>
+{% endif %}
+
+{% endblock %}

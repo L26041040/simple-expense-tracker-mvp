@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Simple Expense Tracker (Final)</title>
+  </head>
+  <body>
+    <h2>Simple Expense Tracker (Final Project MVP)</h2>
+
+    <p>
+      <a href="/">Home</a> |
+      <a href="/report">Monthly Report</a> |
+      <a href="/fx">FX (DB)</a>
+    </p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for m in messages %}
+            <li>{{ m }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <hr />
+    {% block content %}{% endblock %}
+  </body>
+</html>

@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\CU boulder\SW Arch Class 3 - Applications of Software Architecture for Big Data\Project2\simple_expense_web\venv
+set VIRTUAL_ENV=C:\CU boulder\SW Arch Class 3 - Applications of Software Architecture for Big Data\Final Project\simple_expense_web\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
