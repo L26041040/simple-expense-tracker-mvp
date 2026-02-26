@@ -1,92 +1,96 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h3>Exchange Rate</h3>
-<p>
-  Time stamp (UTC):
-  {% if fx_timestamp %}
-    {{ fx_timestamp }}
-  {% else %}
-    N/A
-  {% endif %}
-</p>
+<h2>Simple Expense Tracker</h2>
 
-<table border="1" cellpadding="6">
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+      {% for m in messages %}
+        <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<hr/>
+
+<h3>Exchange Rate (Base: USD)</h3>
+<p><b>Time stamp:</b> {{ fx_table.timestamp_utc }}</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
   <tr>
     <th>Currency</th>
-    <th>to USD (1 USD = X currency)</th>
+    <th>1 USD =</th>
   </tr>
-  {% for cur, rate in fx_map.items() %}
-  <tr>
-    <td>{{ cur }}</td>
-    <td>{{ rate }}</td>
-  </tr>
+  {% for ccy, rate in fx_table.rates.items() %}
+    <tr>
+      <td>{{ ccy }}</td>
+      <td>{{ "%.6f"|format(rate) }}</td>
+    </tr>
   {% endfor %}
 </table>
 
-<form action="/fx/update" method="POST" style="margin-top:10px;">
-  <button type="submit">Fetch FX (Update from API)</button>
+<form action="{{ url_for('fx_update') }}" method="POST" style="margin-top:10px;">
+  <button type="submit">Fetch FX</button>
 </form>
 
-<hr>
+<p style="margin-top:8px;">
+  Tip: If you record a non-USD expense, please click <b>Fetch FX</b> first to refresh the table.
+</p>
+
+<hr/>
 
 <h3>Add Expense</h3>
 
-<p style="font-size: 13px;">
-  Note: The app stores everything in <b>USD</b> for analysis.
-  If you enter a non-USD expense, it will convert using the FX table above.
-</p>
+<form action="{{ url_for('add_expense') }}" method="POST">
+  <label>Category:</label><br/>
+  <select name="category" required>
+    {% for c in categories %}
+      <option value="{{ c }}">{{ c }}</option>
+    {% endfor %}
+  </select>
+  <br/><br/>
 
-<form action="/add_expense" method="POST">
-  <p><b>Category</b></p>
-  {% for c in categories %}
-    <label style="margin-right:10px;">
-      <input type="radio" name="category" value="{{ c }}" required> {{ c }}
-    </label>
-  {% endfor %}
+  <label>Currency:</label><br/>
+  <select name="currency" required>
+    {% for ccy in currencies %}
+      <option value="{{ ccy }}">{{ ccy }}</option>
+    {% endfor %}
+  </select>
+  <br/><br/>
 
-  <p>
-    <b>Amount</b><br>
-    <input type="number" name="amount" step="0.01" placeholder="Key in here" required>
-  </p>
-
-  <p>
-    <b>Currency</b>
-    <select name="currency">
-      {% for cur in currencies %}
-        <option value="{{ cur }}" {% if cur == "USD" %}selected{% endif %}>{{ cur }}</option>
-      {% endfor %}
-    </select>
-  </p>
-
-  <p>
-    <b>Date</b> (optional)<br>
-    <input type="date" name="expense_date">
-  </p>
+  <label>Amount:</label><br/>
+  <input type="number" step="0.01" name="amount" placeholder="Key in here" required />
+  <br/><br/>
 
   <button type="submit">Submit</button>
 </form>
 
-<hr>
+<hr/>
 
 <h3>Recent Records (latest 10)</h3>
-<table border="1" cellpadding="6">
-  <tr>
-    <th>ID</th>
-    <th>Date</th>
-    <th>Category</th>
-    <th>Original</th>
-    <th>Stored (USD)</th>
-  </tr>
-  {% for e in recent %}
-  <tr>
-    <td>{{ e.id }}</td>
-    <td>{{ e.expense_date }}</td>
-    <td>{{ e.category }}</td>
-    <td>{{ "%.2f"|format(e.amount_original) }} {{ e.currency }}</td>
-    <td>${{ "%.2f"|format(e.amount_usd) }}</td>
-  </tr>
-  {% endfor %}
-</table>
+{% if recent %}
+  <table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+      <th>UTC Time</th>
+      <th>Category</th>
+      <th>Amount</th>
+      <th>Currency</th>
+      <th>USD (converted)</th>
+    </tr>
+    {% for r in recent %}
+      <tr>
+        <td>{{ r.created_at_utc }}</td>
+        <td>{{ r.category }}</td>
+        <td>{{ "%.2f"|format(r.amount) }}</td>
+        <td>{{ r.currency }}</td>
+        <td>{{ "%.2f"|format(r.amount_usd) }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No records yet.</p>
+{% endif %}
 
 {% endblock %}
